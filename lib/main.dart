@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nutriscan_fe_flutter/screens/splash/splash_page.dart';
+import 'package:nutriscan_fe_flutter/routes/app_router.dart';
 import 'package:nutriscan_fe_flutter/utils/app_colors.dart';
 
 void main() {
@@ -11,7 +11,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -28,7 +29,6 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const SplashPage(),
     );
   }
 }
