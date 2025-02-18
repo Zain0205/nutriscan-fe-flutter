@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:nutriscan_fe_flutter/models/onboarding_item.dart';
 import 'package:nutriscan_fe_flutter/screens/onboarding/onboarding_page.dart';
 import 'package:nutriscan_fe_flutter/utils/app_colors.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -89,7 +91,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     height: 26,
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.push('/register');
+                    },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
                     ),
@@ -100,7 +104,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     children: [
                       const Text("Already have an account?"),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.push('/login');
+                        },
                         child: const Text(
                           "Login",
                           style: TextStyle(
