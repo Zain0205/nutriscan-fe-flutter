@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:nutriscan_fe_flutter/screens/auth/register/basic_registration_step.dart';
+import 'package:nutriscan_fe_flutter/screens/auth/register/details_field.dart';
+import 'package:nutriscan_fe_flutter/screens/auth/register/verification_register.dart';
 import 'package:nutriscan_fe_flutter/utils/app_colors.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -12,14 +14,29 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  int _currentStep = 1;
+  final _totalSteps = 3;
+
+  void nextStep() {
+    if (_currentStep < _totalSteps) {
+      setState(() {
+        _currentStep++;
+      });
+    }
+  }
+
+  void previousStep() {
+    if (_currentStep > 1) {
+      setState(() {
+        _currentStep--;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -33,6 +50,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
@@ -45,21 +65,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(height: 30),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
                             Text(
-                              "The Basic",
-                              style: TextStyle(
+                              _currentStep == 1
+                                  ? "The Basic"
+                                  : _currentStep == 2
+                                      ? "Details"
+                                      : "Verification",
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Text(
-                              "1/2",
-                              style: TextStyle(
+                              '$_currentStep/$_totalSteps',
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                               ),
@@ -67,19 +91,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ],
                         ),
                       ),
-                      const BasicRegistrationStep(),
-                      const SizedBox(height: 30),
+                      _currentStep == 1
+                          ? const BasicRegistrationStep()
+                          : _currentStep == 2
+                              ? const DetailsField()
+                              : const VerificationRegister(),
+                      const SizedBox(height: 40),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           children: [
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(double.infinity, 50),
-                              ),
-                              child: const Text('Next'),
-                            ),
+                            _currentStep == 1
+                                ? ElevatedButton(
+                                    onPressed: nextStep,
+                                    style: ElevatedButton.styleFrom(
+                                      minimumSize: const Size(
+                                        double.infinity,
+                                        50,
+                                      ),
+                                    ),
+                                    child: const Text('Next'),
+                                  )
+                                : Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: previousStep,
+                                          style: ElevatedButton.styleFrom(
+                                            minimumSize: const Size(
+                                              double.infinity,
+                                              50,
+                                            ),
+                                          ),
+                                          child: const Text('Previous'),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: nextStep,
+                                          style: ElevatedButton.styleFrom(
+                                            minimumSize: const Size(
+                                              double.infinity,
+                                              50,
+                                            ),
+                                          ),
+                                          child: const Text('Next'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -100,7 +161,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
