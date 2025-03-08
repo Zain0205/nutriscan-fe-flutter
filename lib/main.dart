@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nutriscan_fe_flutter/core/bloc_injector.dart';
 
 import 'package:nutriscan_fe_flutter/routes/app_router.dart';
 import 'package:nutriscan_fe_flutter/utils/app_colors.dart';
 
 void main() {
-  runApp(const MyApp());
+  final BlocInjector blocInjector = BlocInjector();
+  runApp(
+    MultiBlocProvider(
+      providers: blocInjector.providers,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
