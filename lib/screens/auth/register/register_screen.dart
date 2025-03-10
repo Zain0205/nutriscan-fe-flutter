@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutriscan_fe_flutter/blocs/auth/auth_bloc.dart';
+import 'package:nutriscan_fe_flutter/blocs/auth/auth_state.dart';
 
 import 'package:nutriscan_fe_flutter/screens/auth/register/basic_registration_step.dart';
 import 'package:nutriscan_fe_flutter/screens/auth/register/details_field.dart';
-import 'package:nutriscan_fe_flutter/screens/auth/register/verification_register.dart';
+// import 'package:nutriscan_fe_flutter/screens/auth/register/verification_register.dart';
 import 'package:nutriscan_fe_flutter/utils/app_colors.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -14,24 +16,8 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  int _currentStep = 1;
-  final _totalSteps = 3;
-
-  void nextStep() {
-    if (_currentStep < _totalSteps) {
-      setState(() {
-        _currentStep++;
-      });
-    }
-  }
-
-  void previousStep() {
-    if (_currentStep > 1) {
-      setState(() {
-        _currentStep--;
-      });
-    }
-  }
+  final int _currentStep = 1;
+  final int _totalSteps = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -91,77 +77,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ],
                         ),
                       ),
-                      _currentStep == 1
-                          ? const BasicRegistrationStep()
-                          : _currentStep == 2
-                              ? const DetailsField()
-                              : const VerificationRegister(),
-                      const SizedBox(height: 40),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          children: [
-                            _currentStep == 1
-                                ? ElevatedButton(
-                                    onPressed: nextStep,
-                                    style: ElevatedButton.styleFrom(
-                                      minimumSize: const Size(
-                                        double.infinity,
-                                        50,
-                                      ),
-                                    ),
-                                    child: const Text('Next'),
-                                  )
-                                : Row(
-                                    children: [
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: previousStep,
-                                          style: ElevatedButton.styleFrom(
-                                            minimumSize: const Size(
-                                              double.infinity,
-                                              50,
-                                            ),
-                                          ),
-                                          child: const Text('Previous'),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: nextStep,
-                                          style: ElevatedButton.styleFrom(
-                                            minimumSize: const Size(
-                                              double.infinity,
-                                              50,
-                                            ),
-                                          ),
-                                          child: const Text('Next'),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text("Already have an account?"),
-                                TextButton(
-                                  onPressed: () {
-                                    context.push("/login");
-                                  },
-                                  child: const Text(
-                                    "Login",
-                                    style: TextStyle(
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                      BlocConsumer<AuthBloc, AuthState>(
+                        listener: (context, state) {
+                          if (state is AuthSuccess) {
+                            Navigator.pushNamed(context, '/home');
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state is AuthLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (state is AuthStepOneState) {
+                            return BasicRegistrationStep(state: state);
+                          } else if (state is AuthStepTwoState) {
+                            return DetailsField(state: state);
+                          }
+
+                          return const BasicRegistrationStep();
+                        },
                       ),
-                      const SizedBox(height: 10),
+                      // const VerificationRegister(),
                     ],
                   ),
                 ),
