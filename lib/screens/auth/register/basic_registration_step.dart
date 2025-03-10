@@ -1,8 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nutriscan_fe_flutter/blocs/auth/auth_bloc.dart';
+import 'package:nutriscan_fe_flutter/blocs/auth/auth_event.dart';
+import 'package:nutriscan_fe_flutter/blocs/auth/auth_state.dart';
 import 'package:nutriscan_fe_flutter/utils/app_colors.dart';
+import 'package:nutriscan_fe_flutter/widget/registration_button.dart';
 
-class BasicRegistrationStep extends StatelessWidget {
-  const BasicRegistrationStep({super.key});
+class BasicRegistrationStep extends StatefulWidget {
+  final AuthStepOneState? state;
+
+  const BasicRegistrationStep({this.state, super.key});
+
+  @override
+  State<BasicRegistrationStep> createState() => _BasicRegistrationStepState();
+}
+
+class _BasicRegistrationStepState extends State<BasicRegistrationStep> {
+  late TextEditingController _nameController;
+  late TextEditingController _emailController;
+  late TextEditingController _passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.state?.name ?? "");
+    _emailController = TextEditingController(text: widget.state?.email ?? "");
+    _passwordController =
+        TextEditingController(text: widget.state?.password ?? "");
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +58,12 @@ class BasicRegistrationStep extends StatelessWidget {
             height: 30,
           ),
           TextField(
+            controller: _nameController,
+            onChanged: (value) {
+              context.read<AuthBloc>().add(
+                    UpdateRegisterStepOneField(name: value),
+                  );
+            },
             decoration: InputDecoration(
               hintText: "Input Your Full Name",
               prefixIcon: const Icon(
@@ -47,6 +86,12 @@ class BasicRegistrationStep extends StatelessWidget {
             height: 30,
           ),
           TextField(
+            controller: _emailController,
+            onChanged: (value) {
+              context.read<AuthBloc>().add(
+                    UpdateRegisterStepOneField(email: value),
+                  );
+            },
             decoration: InputDecoration(
               hintText: "Input Your Email",
               prefixIcon: const Icon(
@@ -69,6 +114,12 @@ class BasicRegistrationStep extends StatelessWidget {
             height: 30,
           ),
           TextField(
+            controller: _passwordController,
+            onChanged: (value) {
+              context.read<AuthBloc>().add(
+                    UpdateRegisterStepOneField(password: value),
+                  );
+            },
             decoration: InputDecoration(
               hintText: "Input Your Password",
               prefixIcon: const Icon(
@@ -87,6 +138,36 @@ class BasicRegistrationStep extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 40),
+          ElevatedButton(
+            onPressed: () {
+              context.read<AuthBloc>().add(
+                    RegisterStepOne(
+                      name: _nameController.text,
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                    ),
+                  );
+
+              context.read<AuthBloc>().add(
+                    RegisterStepTwo(
+                      age: null,
+                      weight: null,
+                      height: null,
+                      goal: null,
+                    ),
+                  );
+            },
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(
+                double.infinity,
+                50,
+              ),
+            ),
+            child: const Text('Next'),
+          ),
+          const RegistrationButton(),
+          const SizedBox(height: 10),
         ],
       ),
     );
