@@ -8,14 +8,15 @@ class AuthService {
 
   AuthService({required this.dioClient, required this.secureStorageService});
 
-  Future<void> register(
-      {required String email,
-      required String name,
-      required String password,
-      required int age,
-      required double weight,
-      required double height,
-      required String goal}) async {
+  Future<void> register({
+    required String email,
+    required String name,
+    required String password,
+    required int age,
+    required double weight,
+    required double height,
+    required String goal,
+  }) async {
     try {
       final Response response = await dioClient.instance.post(
         '/api/register',
