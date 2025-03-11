@@ -1,3 +1,5 @@
+// import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:nutriscan_fe_flutter/core/dio_client.dart';
 import 'package:nutriscan_fe_flutter/core/secure_storage_service.dart';
@@ -8,7 +10,7 @@ class AuthService {
 
   AuthService({required this.dioClient, required this.secureStorageService});
 
-  Future<void> register({
+  Future<Map<String, dynamic>> register({
     required String email,
     required String name,
     required String password,
@@ -27,18 +29,17 @@ class AuthService {
           'age': age,
           'weight': weight,
           'height': height,
-          'goal': goal
+          'goal': goal,
         },
       );
 
       if (response.statusCode == 201) {
-        final token = response.data['token'];
-        await secureStorageService.saveToken(token);
+        return response.data;
       } else {
-        throw Exception(response.data['message']);
+        throw Exception("Failed to register: ${response.statusCode}");
       }
     } catch (e) {
-      throw Exception("Error registering: ${e.toString()}");
+      throw Exception("Error: ${e.toString()}");
     }
   }
 }
