@@ -16,6 +16,7 @@ class DetailsField extends StatefulWidget {
 
 class _DetailsFieldState extends State<DetailsField> {
   String? _selectedValue;
+  final _key = GlobalKey<FormState>();
   late TextEditingController _ageController;
   late TextEditingController _weightController;
   late TextEditingController _heightController;
@@ -23,12 +24,12 @@ class _DetailsFieldState extends State<DetailsField> {
   @override
   void initState() {
     super.initState();
-    _ageController =
-        TextEditingController(text: widget.state?.age.toString() ?? "");
-    _weightController =
-        TextEditingController(text: widget.state?.weight.toString() ?? "");
-    _heightController =
-        TextEditingController(text: widget.state?.height.toString() ?? "");
+    _ageController = TextEditingController(
+        text: widget.state?.age != null ? widget.state?.age.toString() : "");
+    _weightController = TextEditingController(
+        text: widget.state?.age != null ? widget.state?.weight.toString() : "");
+    _heightController = TextEditingController(
+        text: widget.state?.age != null ? widget.state?.height.toString() : "");
     _selectedValue = widget.state?.goal;
   }
 
@@ -36,192 +37,213 @@ class _DetailsFieldState extends State<DetailsField> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 60, 0),
-            child: Text(
-                "Now, let's complete your profile by filling in the details below",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.gray,
-                )),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          TextField(
-            controller: _ageController,
-            onChanged: (value) {
-              int? parsedAge = int.tryParse(value);
-              context.read<AuthBloc>().add(
-                    UpdateRegisterStepTwoField(age: parsedAge),
-                  );
-            },
-            decoration: InputDecoration(
-              hintText: "Input Your Age",
-              prefixIcon: const Icon(
-                Icons.person_outline,
-                color: Colors.grey,
-              ),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 236, 236, 236),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade300),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade500),
-              ),
+      child: Form(
+        key: _key,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 60, 0),
+              child: Text(
+                  "Now, let's complete your profile by filling in the details below",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.gray,
+                  )),
             ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          TextField(
-            controller: _weightController,
-            onChanged: (value) {
-              double? parsedWeight = double.tryParse(value);
-              context.read<AuthBloc>().add(
-                    UpdateRegisterStepTwoField(weight: parsedWeight),
-                  );
-            },
-            decoration: InputDecoration(
-              hintText: "Input Your Body Weight",
-              prefixIcon: const Icon(
-                Icons.monitor_weight_outlined,
-                color: Colors.grey,
-              ),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 236, 236, 236),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade300),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade500),
-              ),
+            const SizedBox(
+              height: 30,
             ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          TextField(
-            controller: _heightController,
-            onChanged: (value) {
-              double? parsedHeight = double.tryParse(value);
-              context.read<AuthBloc>().add(
-                    UpdateRegisterStepTwoField(height: parsedHeight),
-                  );
-            },
-            decoration: InputDecoration(
-              hintText: "Input Your Height",
-              prefixIcon: const Icon(
-                Icons.height_outlined,
-                color: Colors.grey,
-              ),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 236, 236, 236),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade300),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade500),
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          DropdownButtonFormField<String>(
-            decoration: InputDecoration(
-              prefixIcon: const Icon(
-                Icons.track_changes_outlined,
-                color: Colors.grey,
-              ),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 236, 236, 236),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade300),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade500),
-              ),
-            ),
-            value: _selectedValue,
-            validator: (value) {
-              if (value == null) {
-                return 'Please select a goal';
-              }
-              return null;
-            },
-            onChanged: (String? newValue) {
-              setState(() {
-                _selectedValue = newValue;
-              });
-              context.read<AuthBloc>().add(
-                    UpdateRegisterStepTwoField(goal: newValue),
-                  );
-            },
-            items: <String>['Bulking', "Cutting", "Maintenance"]
-                .map<DropdownMenuItem<String>>(
-              (String value) {
-                return DropdownMenuItem(
-                  value: value,
-                  child: Text(value),
-                );
+            TextFormField(
+              controller: _ageController,
+              onChanged: (value) {
+                int? parsedAge = int.tryParse(value);
+                context.read<AuthBloc>().add(
+                      UpdateRegisterStepTwoField(age: parsedAge),
+                    );
               },
-            ).toList(),
-          ),
-          const SizedBox(height: 40),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.read<AuthBloc>().add(
-                          GoBackStepOneEvent(),
-                        );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(
-                      double.infinity,
-                      50,
-                    ),
-                  ),
-                  child: const Text('Previous'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your age';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                hintText: "Input Your Age",
+                prefixIcon: const Icon(
+                  Icons.person_outline,
+                  color: Colors.grey,
+                ),
+                filled: true,
+                fillColor: const Color.fromARGB(255, 236, 236, 236),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade500),
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.read<AuthBloc>().add(
-                          RegisterEvent(),
-                        );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(
-                      double.infinity,
-                      50,
-                    ),
-                  ),
-                  child: const Text('Next'),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            TextFormField(
+              controller: _weightController,
+              onChanged: (value) {
+                double? parsedWeight = double.tryParse(value);
+                context.read<AuthBloc>().add(
+                      UpdateRegisterStepTwoField(weight: parsedWeight),
+                    );
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your weight';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                hintText: "Input Your Body Weight",
+                prefixIcon: const Icon(
+                  Icons.monitor_weight_outlined,
+                  color: Colors.grey,
+                ),
+                filled: true,
+                fillColor: const Color.fromARGB(255, 236, 236, 236),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade500),
                 ),
               ),
-            ],
-          ),
-          const RegistrationButton(),
-          const SizedBox(height: 10),
-        ],
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            TextFormField(
+              controller: _heightController,
+              onChanged: (value) {
+                double? parsedHeight = double.tryParse(value);
+                context.read<AuthBloc>().add(
+                      UpdateRegisterStepTwoField(height: parsedHeight),
+                    );
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your height';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                hintText: "Input Your Height",
+                prefixIcon: const Icon(
+                  Icons.height_outlined,
+                  color: Colors.grey,
+                ),
+                filled: true,
+                fillColor: const Color.fromARGB(255, 236, 236, 236),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade500),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                prefixIcon: const Icon(
+                  Icons.track_changes_outlined,
+                  color: Colors.grey,
+                ),
+                filled: true,
+                fillColor: const Color.fromARGB(255, 236, 236, 236),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade500),
+                ),
+              ),
+              value: _selectedValue,
+              validator: (value) {
+                if (value == null) {
+                  return 'Please select a goal';
+                }
+                return null;
+              },
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedValue = newValue;
+                });
+                context.read<AuthBloc>().add(
+                      UpdateRegisterStepTwoField(goal: newValue),
+                    );
+              },
+              items: <String>['Bulking', "Cutting", "Maintenance"]
+                  .map<DropdownMenuItem<String>>(
+                (String value) {
+                  return DropdownMenuItem(
+                    value: value,
+                    child: Text(value),
+                  );
+                },
+              ).toList(),
+            ),
+            const SizedBox(height: 40),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.read<AuthBloc>().add(
+                            GoBackStepOneEvent(),
+                          );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(
+                        double.infinity,
+                        50,
+                      ),
+                    ),
+                    child: const Text('Previous'),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.read<AuthBloc>().add(
+                            RegisterEvent(),
+                          );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(
+                        double.infinity,
+                        50,
+                      ),
+                    ),
+                    child: const Text('Next'),
+                  ),
+                ),
+              ],
+            ),
+            const RegistrationButton(),
+            const SizedBox(height: 10),
+          ],
+        ),
       ),
     );
   }
