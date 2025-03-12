@@ -12,7 +12,7 @@ class RegisterStepOne extends AuthEvent {
 
   RegisterStepOne({this.name, this.email, this.password});
 
-  @override 
+  @override
   List<Object?> get props => [name, email, password];
 }
 
@@ -60,6 +60,16 @@ class UpdateRegisterStepTwoField extends AuthEvent {
   List<Object?> get props => [age, weight, height, goal];
 }
 
+class OtpVerification extends AuthEvent {
+  final String? email;
+  final String? otp;
+
+  OtpVerification({this.email, this.otp});
+
+  @override
+  List<Object?> get props => [email, otp];
+}
+
 class GoBackStepOneEvent extends AuthEvent {}
 
 class RegisterEvent extends AuthEvent {}
@@ -75,3 +85,13 @@ class LoginEvent extends AuthEvent {
 }
 
 class LogoutEvent extends AuthEvent {}
+
+class OtpVeryficationSubmitEvent extends AuthEvent {
+  final String? email;
+  final String? otp;
+
+  OtpVeryficationSubmitEvent({this.email, this.otp});
+
+  @override
+  List<Object?> get props => [email, otp];
+}
