@@ -1,9 +1,16 @@
+// import 'dart:developer';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nutriscan_fe_flutter/blocs/auth/auth_bloc.dart';
+import 'package:nutriscan_fe_flutter/blocs/auth/auth_event.dart';
+import 'package:nutriscan_fe_flutter/blocs/auth/auth_state.dart';
 import 'package:nutriscan_fe_flutter/utils/app_colors.dart';
 
 class VerificationRegister extends StatefulWidget {
-  const VerificationRegister({super.key});
+  final AuthOtpVerification? state;
+  const VerificationRegister({this.state, super.key});
 
   @override
   State<VerificationRegister> createState() => _VerificationRegisterState();
@@ -42,6 +49,10 @@ class _VerificationRegisterState extends State<VerificationRegister> {
       }
     }
     return false; // Return false agar tidak mengganggu event lainnya
+  }
+
+  String _getOtpValue() {
+    return otpControllers.map((e) => e.text).join();
   }
 
   @override
@@ -101,10 +112,27 @@ class _VerificationRegisterState extends State<VerificationRegister> {
                         otpFocusNode[index].unfocus();
                       }
                     }
+
+                    context.read<AuthBloc>().add(
+                          OtpVerification(otp: _getOtpValue()),
+                        );
                   },
                 ),
               ),
             ),
+          ),
+          const SizedBox(height: 30),
+          ElevatedButton(
+            onPressed: () {
+              context.read<AuthBloc>().add(OtpVeryficationSubmitEvent());
+            },
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(
+                double.infinity,
+                50,
+              ),
+            ),
+            child: Text('${widget.state?.email}'),
           ),
         ],
       ),
