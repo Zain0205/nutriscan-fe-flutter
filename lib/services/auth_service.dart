@@ -1,5 +1,7 @@
 // import 'dart:developer';
 
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:nutriscan_fe_flutter/core/dio_client.dart';
 import 'package:nutriscan_fe_flutter/core/secure_storage_service.dart';
@@ -37,6 +39,28 @@ class AuthService {
         return response.data;
       } else {
         throw Exception("Failed to register: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Error: ${e.toString()}");
+    }
+  }
+
+  Future<Map<String, dynamic>> veryfyOtp({String? email, String? otp}) async {
+    try {
+      final Response response = await dioClient.instance.post(
+        "/api/verification",
+        data: {
+          "email": email,
+          "otp": otp,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        secureStorageService.saveToken(response.data["token"]);
+        log("Token: ${await secureStorageService.getToken()}");
+        return response.data;
+      } else {
+        throw Exception("Failed to verify OTP: ${response.statusCode}");
       }
     } catch (e) {
       throw Exception("Error: ${e.toString()}");
