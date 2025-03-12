@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nutriscan_fe_flutter/blocs/auth/auth_event.dart';
 import 'package:nutriscan_fe_flutter/blocs/auth/auth_state.dart';
@@ -13,6 +15,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<UpdateRegisterStepTwoField>(_onStepTwoUpdate);
     on<GoBackStepOneEvent>(_onGoBackStepOne);
     on<RegisterEvent>(_onuserRegisterSubmit);
+    on<OtpVerification>(_onOtpUpdate);
+    on<OtpVeryficationSubmitEvent>(_onOtpSubmit);
   }
 
   void _onRegisterStepOne(RegisterStepOne event, Emitter<AuthState> emit) {
@@ -110,10 +114,41 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           goal: curentState.goal!,
         );
 
-        emit(AuthSuccess());
+        emit(AuthOtpVerification(email: curentState.email, otp: null));
       } catch (e) {
         emit(AuthFailure(e.toString()));
       }
+    }
+  }
+
+  void _onOtpUpdate(OtpVerification event, Emitter<AuthState> emit) {
+    final currentState = state;
+
+    if (currentState is AuthOtpVerification) {
+      emit(
+        currentState.copyWith(
+          otp: event.otp,
+        ),
+      );
+    }
+  }
+
+  void _onOtpSubmit(
+      OtpVeryficationSubmitEvent event, Emitter<AuthState> emit) async {
+    final currentState = state;
+    log('currentState: $currentState');
+    log("${currentState is AuthOtpVerification}");
+    try {
+      if (currentState is AuthOtpVerification) {
+        emit(AuthLoading());
+        await authService.veryfyOtp(
+          email: currentState.email!,
+          otp: currentState.otp!,
+        );
+        emit(AuthSuccess());
+      }
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
     }
   }
 }
