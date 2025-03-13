@@ -57,6 +57,7 @@ class _DetailsFieldState extends State<DetailsField> {
             ),
             TextFormField(
               controller: _ageController,
+              keyboardType: TextInputType.number,
               onChanged: (value) {
                 int? parsedAge = int.tryParse(value);
                 context.read<AuthBloc>().add(
@@ -92,6 +93,7 @@ class _DetailsFieldState extends State<DetailsField> {
             ),
             TextFormField(
               controller: _weightController,
+              keyboardType: TextInputType.number,
               onChanged: (value) {
                 double? parsedWeight = double.tryParse(value);
                 context.read<AuthBloc>().add(
@@ -127,6 +129,7 @@ class _DetailsFieldState extends State<DetailsField> {
             ),
             TextFormField(
               controller: _heightController,
+              keyboardType: TextInputType.number,
               onChanged: (value) {
                 double? parsedHeight = double.tryParse(value);
                 context.read<AuthBloc>().add(
@@ -225,9 +228,11 @@ class _DetailsFieldState extends State<DetailsField> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      context.read<AuthBloc>().add(
-                            RegisterEvent(),
-                          );
+                      if (_key.currentState!.validate()) {
+                        context.read<AuthBloc>().add(
+                              RegisterEvent(),
+                            );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(
