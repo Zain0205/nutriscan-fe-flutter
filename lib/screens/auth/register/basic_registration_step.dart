@@ -166,22 +166,24 @@ class _BasicRegistrationStepState extends State<BasicRegistrationStep> {
             const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
-                context.read<AuthBloc>().add(
-                      RegisterStepOne(
-                        name: _nameController.text,
-                        email: _emailController.text,
-                        password: _passwordController.text,
-                      ),
-                    );
+                if (_key.currentState!.validate()) {
+                  context.read<AuthBloc>().add(
+                        RegisterStepOne(
+                          name: _nameController.text,
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        ),
+                      );
 
-                context.read<AuthBloc>().add(
-                      RegisterStepTwo(
-                        age: null,
-                        weight: null,
-                        height: null,
-                        goal: null,
-                      ),
-                    );
+                  context.read<AuthBloc>().add(
+                        RegisterStepTwo(
+                          age: null,
+                          weight: null,
+                          height: null,
+                          goal: null,
+                        ),
+                      );
+                }
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(
