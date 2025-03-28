@@ -1,4 +1,4 @@
-// import 'dart:developer';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
@@ -10,6 +10,7 @@ import 'package:nutriscan_fe_flutter/blocs/auth/auth_state.dart';
 
 import 'package:nutriscan_fe_flutter/screens/auth/register/basic_registration_step.dart';
 import 'package:nutriscan_fe_flutter/screens/auth/register/details_field.dart';
+import 'package:nutriscan_fe_flutter/screens/auth/register/verification_register.dart';
 import 'package:nutriscan_fe_flutter/utils/app_colors.dart';
 // import 'package:nutriscan_fe_flutter/screens/auth/register/verification_register.dart';
 
@@ -84,6 +85,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       BlocConsumer<AuthBloc, AuthState>(
                         listener: (context, state) {
+                          log('state: $state');
                           if (state is AuthFailure) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -104,8 +106,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return BasicRegistrationStep(state: state);
                           } else if (state is AuthStepTwoState) {
                             return DetailsField(state: state);
-                          }
-
+                          } else if (state is AuthOtpVerification) {
+                            return VerificationRegister(state: state);
+                          } 
                           return const BasicRegistrationStep();
                         },
                       ),
