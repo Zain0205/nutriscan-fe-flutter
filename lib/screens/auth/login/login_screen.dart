@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                     padding: EdgeInsets.symmetric(horizontal: 20),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         "NutriScan",
                         style: TextStyle(
@@ -129,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               const Text("Don't have an account?"),
                               TextButton(
                                 onPressed: () {
-                                  context.push("/register");
+                                  context.push("/main");
                                 },
                                 child: const Text(
                                   "Register",

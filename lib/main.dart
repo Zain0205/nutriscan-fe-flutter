@@ -38,6 +38,9 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
+        colorScheme: const ColorScheme.light(
+          surface: Colors.white,
+        ),
         useMaterial3: true,
       ),
     );
